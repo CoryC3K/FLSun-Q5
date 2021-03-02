@@ -19,6 +19,14 @@ My kit also came with the WiFi module, but I haven't played around with that yet
 
 Once the firmware is loaded, do the autoconfig in the menu to setup your printer.
 
+## G33
+
+Hey, I thought the last section was autoconfig?!
+
+You should run G33 a couple times so that Marlin can tweak in your machine's individual build characteristics. Everyone's arm lengths are gonna be slightly off. Everyone's tower heights are gonna be slightly different. That's just manufacturing for you. Use the guide on Marlin's site.
+
+https://marlinfw.org/docs/gcode/G033.html
+
 ## Bed Leveling
 
 I have enabled UBL in marlin, and it works really well for me. You will need to follow Marlin's guide on how to set it up before using it. 
