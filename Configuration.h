@@ -74,7 +74,7 @@
 // @section info
 
 // Author info of this build printed to the host during boot and M115
-#define STRING_CONFIG_H_AUTHOR "(CoryC, Q5 config V3)" // Who made the changes.
+#define STRING_CONFIG_H_AUTHOR "(CoryC, Q5 config Robin Nano V3)" // Who made the changes.
 //#define CUSTOM_VERSION_FILE Version.h // Path from the root directory (no quotes)
 
 /**
@@ -650,7 +650,7 @@
   #define DELTA_DIAGONAL_ROD 215.0 // (mm)
 
   // Distance between bed and nozzle Z home position
-  #define DELTA_HEIGHT 220.00 // (mm) Get this value from G33 auto calibrate
+  #define DELTA_HEIGHT 200.00 // (mm) Get this value from G33 auto calibrate
 
   #define DELTA_ENDSTOP_ADJ { 0.0, 0.0, 0.0 } // Get these values from G33 auto calibrate
 
@@ -1980,7 +1980,7 @@
 // This option overrides the default number of encoder pulses needed to
 // produce one step. Should be increased for high-resolution encoders.
 //
-#define ENCODER_PULSES_PER_STEP 3
+#define ENCODER_PULSES_PER_STEP 4
 
 //
 // Use this option to override the number of step signals required to
@@ -2547,7 +2547,7 @@
   //#define MKS_WIFI_MODULE  // MKS WiFi module
 #endif
 
-//#define MKS_WIFI_MODULE
+#define MKS_WIFI_MODULE
 
 /**
  * TFT Rotation. Set to one of the following values:
@@ -2608,7 +2608,7 @@
 
 // Set number of user-controlled fans. Disable to use all board-defined fans.
 // :[1,2,3,4,5,6,7,8]
-//#define NUM_M106_FANS 1
+#define NUM_M106_FANS 1
 
 // Increase the FAN PWM frequency. Removes the PWM noise but increases heating in the FET/Arduino
 //#define FAST_PWM_FAN
