@@ -10,22 +10,39 @@ The board physically fits fine, although it does block the new USB drive port. Y
 
 The new display doesn't fit, and as soon as I get my design tweaked in, I'll upload some STL files for a mount adapter.
 
-# Wifi
-My kit also came with the WiFi module, but I haven't played around with that yet. Apparently it just involves activating it in Marlin, and flashing your own Wifi Access Point info using a procedure similar to flashing the main board, but again I haven't done it myself yet.
+## Fan Wiring
+Part cooling fan goes to "Fan 2" on the mobo.
+Hotend fan goes to "Fan 1"
+Internal fan goes to one of the 12/24v plugs so it's always on. I've got mine spliced into Fan 1 and it's been fine. You're usually not jogging around enough to heat things up without the extruder on anyway.
 
-# Install Notes
+# Install Instructions & Notes
 
-## Auto Configuration
+1. Load the 'assets' folder and the 'Robin_nano_v3.bin' file onto an SD card, load the card into the printer, and turn it on. This will flash Marlin.
+2. Warm up the bed to around your normal print temp, I do 60C for PLA.
+3. Run the "Auto Config" from the Settings->Configuration->Delta Calibration->Auto Calibration. That does an M33 command, feel free to do it more than once. https://marlinfw.org/docs/gcode/G033.html
+4. Click Settings->Configuration->Store Settings to save the config you just did. 
+5. Connect OctoPi or another terminal program so you can type in G-code. I think you can do the bed leveling through the menu, but I do G-codes.
+6. Type in 'G28' (home)
+7. Type in 'G29 P1' (create UBL bed mesh) We're following this: https://marlinfw.org/docs/features/unified_bed_leveling.html
+8. Wait for the machine to probe the bed.
+9. Type in 'G29 P3 T' and view the output. If the mesh isn't full of values everywhere, type the command in a few more times until it is. 
+10. Type in 'G29 S1' to store the Mesh
+11. Type in 'G29 A' to activate bed leveling (this will be added to your start code later)
+12. M500 to save the settings to EEPROM. 
+13. Set your Z probe offset height. This is where your first layering comes in. Mine is at ~19.00 for reference. 
+14. Home/G28
+15. Jog the Z down until the paper catches
+16. Remember the current Z value, and add it to Settings->Configuration->Probe Z Offset
 
-Once the firmware is loaded, do the autoconfig in the menu to setup your printer.
+And that's it. I just did a full reset of my printer using these instructions, and it's good to go! You can stop here if you know what you're doing, the rest is for my own notes.
 
-## G33
+## Auto Configuration & G33
 
-Hey, I thought the last section was autoconfig?!
-
-You should run G33 a couple times so that Marlin can tweak in your machine's individual build characteristics. Everyone's arm lengths are gonna be slightly off. Everyone's tower heights are gonna be slightly different. That's just manufacturing for you. Use the guide on Marlin's site.
+You should run G33 a couple times so that Marlin can tweak in your machine's individual build characteristics. Everyone's arm lengths are gonna be slightly off. Everyone's tower heights are gonna be slightly different. The endstops are mounted a few microns different. That's just manufacturing for you. Use the guide on Marlin's site.
 
 https://marlinfw.org/docs/gcode/G033.html
+
+This will tweak everything just a bit and make your prints MUCH more accurate.
 
 ## Bed Leveling
 
@@ -45,9 +62,16 @@ I've included a folder called "pre-built firmware" in this repo. That's the firm
 
 As with all software that someone else made: Use it at your own risk! If it breaks anything, I'm waiving all reponsibility. 
 
+# Wifi
+My kit also came with the WiFi module, but I haven't played around with that yet. Apparently it just involves activating it in Marlin, and flashing your own Wifi Access Point info using a procedure similar to flashing the main board, but again I haven't done it myself yet.
+
 # Marlin Build Notes
 
 This is mostly for me to remember 'why' I did things...
+
+## build command
+
+'pio run' (i'm using the PIO build system in windows and whatnot)
 
 ## Marlin display mode
 
@@ -68,4 +92,25 @@ I've got it configured in the Configuration_adv.h to use PC14 as a hotend fan. T
 
 It helps quiet down the printer during non-printing times. My internal fan is doubled with my extruder fan, as I'm running 12v noctua's. This shuts them both off, and I should be more concerned about heat on the mobo, but I'll be okay.
 
+## Fan1 vs Fan2
 
+So, MKS has some 'splanin to do. Their wiring Schematic and their pinout say different things.
+
+In the Silkscreen on the board, and on the "Pin" document, they list 
+FAN1 as PC14 on connector J7
+FAN2 as PB1  on connector J6
+
+On the Schemtaic page (Rev V3.0..002), page 4, it lists:
+FAN1 as PB1  on connector to J6
+FAN2 as PC14 on connector to J7
+
+So already we've had them switched. 
+In Marlin, where we define what pin on the CPU does what, we've got:
+#define FAN_PIN                             PB1   // FAN1, Pin36 board, FAN2 connector, part-cooling
+#define FAN1_PIN                            PC14  // FAN2, Pin9 board, FAN1 connector
+
+Note: I added the comments. 
+As noted in the above section, PC14 is the Hotend-cooling fan, and PB1 is the Extruder fan. To achieve this wiring, do the following:
+
+Extruder Fan plugged into "FAN1"/J7 connector
+Part Cooling Fan plugged into "FAN2"/J6 connector
