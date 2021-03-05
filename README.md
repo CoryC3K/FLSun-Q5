@@ -55,4 +55,17 @@ I had issues accessing certain menus in the fancy LVGL display mode, so I swappe
 
 ## Encoder pulses per step
 
-I had an issue where the scroll wheel was jumping so I upped this and it seems to work well at 3. 
+I had an issue where the scroll wheel was jumping so I upped this and it seems to work well at 4. 
+
+## Wifi
+
+It's enabled in Marlin, but you'll need to flash it with your own SSID & Password, see here:
+https://github.com/makerbase-mks/MKS-WIFI
+
+## Extruder Fan (not part cooling fan)
+
+I've got it configured in the Configuration_adv.h to use PC14 as a hotend fan. This means the fan only comes on when your extruder is above 50 degrees C. 
+
+It helps quiet down the printer during non-printing times. My internal fan is doubled with my extruder fan, as I'm running 12v noctua's. This shuts them both off, and I should be more concerned about heat on the mobo, but I'll be okay.
+
+
