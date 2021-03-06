@@ -72,35 +72,35 @@ I also like to have comments for what the codes do, becuase it's just easier to 
 
 ## Start
 
-G21	  ; mm mode
-G90	  ; absolute positioning
-M82	  ; extruder absolute mode
-M107 T0	; fan off   
-M104 S{material_print_temperature_layer_0} T0 ; start hotend warming, no wait
-M190 S{material_bed_temperature_layer_0}      ; wait for bed warming
-M109 S{material_print_temperature_layer_0} T0 ; make sure hotend is to temp (wait)
-G28    	; Auto Home, disables UBL
-G29 A  	; re-enable UBL
-G29 L1 	; Load slot 1 mesh
-;G29 J  	; 3-point mesh tilt
-G92 E0	; extruder set zero
+G21	  ; mm mode  
+G90	  ; absolute positioning  
+M82	  ; extruder absolute mode  
+M107 T0	; fan off     
+M104 S{material_print_temperature_layer_0} T0 ; start hotend warming, no wait  
+M190 S{material_bed_temperature_layer_0}      ; wait for bed warming  
+M109 S{material_print_temperature_layer_0} T0 ; make sure hotend is to temp (wait)  
+G28    	; Auto Home, disables UBL  
+G29 A  	; re-enable UBL  
+G29 L1 	; Load slot 1 mesh  
+;G29 J  	; 3-point mesh tilt  
+G92 E0	; extruder set zero  
 
 Of note: I didn't like waiting for the bed to come up to temp, and then waiting for the hotend to come up. It just adds time. So I start warming the hotend, wait for the bed to heat up (while the hotend is also warming), and then have it wait for the hotend to finish. It just saves a few minutes, and the power supply & board are plenty strong to handle both at once (as they do while printing). 
 
-Also, the UBL start codes are important. I, personally, have the 3-point mesh tilt turned off, as it wasn't adding much level-ness to my bed once I had everything tweaked. That said, I *always* print at 60c on the bed, I literally don't have anything other than PLA. If you print at different bed temps, you might want to re-enable the mesh tilt to account for different bed temps. (Or store meshes in other slots and use those for different materials, but that's more UBL depth than I want to include here).
+Also, the UBL start codes are important. I, personally, have the 3-point mesh tilt turned off (the semicolon comments out the command, remove it to enable), as it wasn't adding much level-ness to my bed once I had everything tweaked. That said, I *always* print at 60c on the bed, I literally don't have anything other than PLA. If you print at different bed temps, you might want to re-enable the mesh tilt to account for different bed temps. (Or store meshes in other slots and use those for different materials, but that's more UBL depth than I want to include here).
 
 ## Stop
 
-M107	    ; fan off
-M104 S0 	; hot-end off
-M140 S0	  ; bed heat off
-G92 E0	  ; store current extruder pos
-G91	      ; relative pos
-G1 E-1 F300 ; retract 1 slow for cooling
-G1 Z+0.5 E-5 F9000 ; backoff z & extruder
-G28	      ; go home
-M84 	    ;steppers off
-G90 	    ;absolute positioning
+M107	    ; fan off  
+M104 S0 	; hot-end off  
+M140 S0	  ; bed heat off  
+G92 E0	  ; store current extruder pos  
+G91	      ; relative pos  
+G1 E-1 F300 ; retract 1 slow for cooling  
+G1 Z+0.5 E-5 F9000 ; backoff z & extruder  
+G28	      ; go home  
+M84 	    ;steppers off  
+G90 	    ;absolute positioning  
 
 Nothing fancy here, just turning everything off. If your extruder drools a bit, increase the 'E-5' value. 
 If your effector falls down after you turn your steppers off, you need to snug up your carrages. Feel free to leave them on, but you really shouldn't need to, and I like the idea that if power cuts my effector isn't gonna come crashing down on my part.
@@ -139,18 +139,18 @@ It helps quiet down the printer during non-printing times. My internal fan is do
 
 So, MKS has some 'splanin to do. Their wiring Schematic and their pinout say different things.
 
-In the Silkscreen on the board, and on the "Pin" document, they list 
-FAN1 as PC14 on connector J7
-FAN2 as PB1  on connector J6
+In the Silkscreen on the board, and on the "Pin" document, they list  
+FAN1 as PC14 on connector J7  
+FAN2 as PB1  on connector J6  
 
-On the Schemtaic page (Rev V3.0..002), page 4, it lists:
-FAN1 as PB1  on connector to J6
-FAN2 as PC14 on connector to J7
+On the Schemtaic page (Rev V3.0..002), page 4, it lists:  
+FAN1 as PB1  on connector to J6  
+FAN2 as PC14 on connector to J7  
 
-So already we've had them switched. 
-In Marlin, where we define what pin on the CPU does what, we've got:
-#define FAN_PIN                             PB1   // FAN1, Pin36 board, FAN2 connector, part-cooling
-#define FAN1_PIN                            PC14  // FAN2, Pin9 board, FAN1 connector
+So already we've had them switched.  
+In Marlin, where we define what pin on the CPU does what, we've got:  
+#define FAN_PIN                             PB1   // FAN1, Pin36 board, FAN2 connector, part-cooling  
+#define FAN1_PIN                            PC14  // FAN2, Pin9 board, FAN1 connector  
 
 Note: I added the comments. 
 As noted in the above section, PC14 is the Hotend-cooling fan, and PB1 is the Extruder fan. To achieve this wiring, do the following:
