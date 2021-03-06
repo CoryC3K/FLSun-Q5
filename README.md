@@ -62,6 +62,49 @@ I've included a folder called "pre-built firmware" in this repo. That's the firm
 
 As with all software that someone else made: Use it at your own risk! If it breaks anything, I'm waiving all reponsibility. 
 
+# Start & End G-code
+
+I'll preface this by saying I was a CNC machinist for 7 years before I was a SWE, so G-code is just the world I live in.
+
+My code is a modified version of something posted in the FLSun FB owners group. I didn't like a few things, and it didn't have UBL codes, so I've made it my own at this point.
+
+I also like to have comments for what the codes do, becuase it's just easier to *know* what a thing is, than to question yourself and have to look it up again. 
+
+## Start
+
+G21	  ; mm mode
+G90	  ; absolute positioning
+M82	  ; extruder absolute mode
+M107 T0	; fan off   
+M104 S{material_print_temperature_layer_0} T0 ; start hotend warming, no wait
+M190 S{material_bed_temperature_layer_0}      ; wait for bed warming
+M109 S{material_print_temperature_layer_0} T0 ; make sure hotend is to temp (wait)
+G28    	; Auto Home, disables UBL
+G29 A  	; re-enable UBL
+G29 L1 	; Load slot 1 mesh
+;G29 J  	; 3-point mesh tilt
+G92 E0	; extruder set zero
+
+Of note: I didn't like waiting for the bed to come up to temp, and then waiting for the hotend to come up. It just adds time. So I start warming the hotend, wait for the bed to heat up (while the hotend is also warming), and then have it wait for the hotend to finish. It just saves a few minutes, and the power supply & board are plenty strong to handle both at once (as they do while printing). 
+
+Also, the UBL start codes are important. I, personally, have the 3-point mesh tilt turned off, as it wasn't adding much level-ness to my bed once I had everything tweaked. That said, I *always* print at 60c on the bed, I literally don't have anything other than PLA. If you print at different bed temps, you might want to re-enable the mesh tilt to account for different bed temps. (Or store meshes in other slots and use those for different materials, but that's more UBL depth than I want to include here).
+
+## Stop
+
+M107	    ; fan off
+M104 S0 	; hot-end off
+M140 S0	  ; bed heat off
+G92 E0	  ; store current extruder pos
+G91	      ; relative pos
+G1 E-1 F300 ; retract 1 slow for cooling
+G1 Z+0.5 E-5 F9000 ; backoff z & extruder
+G28	      ; go home
+M84 	    ;steppers off
+G90 	    ;absolute positioning
+
+Nothing fancy here, just turning everything off. If your extruder drools a bit, increase the 'E-5' value. 
+If your effector falls down after you turn your steppers off, you need to snug up your carrages. Feel free to leave them on, but you really shouldn't need to, and I like the idea that if power cuts my effector isn't gonna come crashing down on my part.
+
 # Wifi
 My kit also came with the WiFi module, but I haven't played around with that yet. Apparently it just involves activating it in Marlin, and flashing your own Wifi Access Point info using a procedure similar to flashing the main board, but again I haven't done it myself yet.
 
