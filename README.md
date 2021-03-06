@@ -1,4 +1,4 @@
-# FLSun-Q5
+# FLSun-Q5 w/ MKS Robin Nano V3.0
 My repo for my FLSun Q5 3d printer
 
 This is for me to keep and share my Marlin builds for the FLSun Q5 printer using the MKS Robin Nano V3 board.
