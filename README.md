@@ -72,26 +72,26 @@ I also like to have comments for what the codes do, becuase it's just easier to 
 
 ## Start
 
-G21	; mm mode
-G90	; absolute positioning
-M82	; extruder absolute mode
-M107 T0	; fan off
-; start hotend warming, no wait
-M104 S{material_print_temperature_layer_0} T0;
-; wait for bed warming
-M190 S{material_bed_temperature_layer_0}
-; make sure hotend is to temp (wait)
-M109 S{material_print_temperature_layer_0} T0
-G28    	; Auto Home, disables UBL
-G29 A  	; re-enable UBL
-G29 L1 	; Load slot 1 mesh
-G29 J  	; 3-point mesh tilt
-G92 E0	; extruder set zero
-
-G1 X-98 Y0 Z0.2 F4000 ; move to ARC start
-G3 X0 Y-98 I98 Z0.2 E40 F400 ; PRINT PRIMING ARC
-G0 Z1	; raise Z
-G92 E0	; re-set extruder zero
+G21	; mm mode  
+G90	; absolute positioning  
+M82	; extruder absolute mode  
+M107 T0	; fan off  
+; start hotend warming, no wait  
+M104 S{material_print_temperature_layer_0} T0;  
+; wait for bed warming  
+M190 S{material_bed_temperature_layer_0}  
+; make sure hotend is to temp (wait)  
+M109 S{material_print_temperature_layer_0} T0  
+G28    	; Auto Home, disables UBL  
+G29 A  	; re-enable UBL  
+G29 L1 	; Load slot 1 mesh  
+G29 J  	; 3-point mesh tilt  
+G92 E0	; extruder set zero  
+  
+G1 X-98 Y0 Z0.2 F4000 ; move to ARC start  
+G3 X0 Y-98 I98 Z0.2 E40 F400 ; PRINT PRIMING ARC  
+G0 Z1	; raise Z  
+G92 E0	; re-set extruder zero  
 
 Of note: I didn't like waiting for the bed to come up to temp, and then waiting for the hotend to come up. It just adds time. So I start warming the hotend, wait for the bed to heat up (while the hotend is also warming), and then have it wait for the hotend to finish. It just saves a few minutes, and the power supply & board are plenty strong to handle both at once (as they do while printing). 
 
